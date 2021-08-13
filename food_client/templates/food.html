@@ -1,0 +1,95 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Foods</title>
+    <meta name="description" content="A simple HTML5 Template for new projects.">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+          crossorigin="anonymous">
+</head>
+
+<body>
+<div class="container">
+    <nav class="mb-3 navbar navbar-expand-lg navbar-light bg-light">
+        <a href="/update">Edit Items</a>
+    </nav>
+
+    <div class="row">
+        <div class="col-6 get-wrapper">
+            <div class="d-flex justify-content-center"><h1>Food Selections</h1></div>
+            <div class="foods mb-5"></div>
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-primary" id="get-foods">Get list of foods</button>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="d-flex justify-content-center"><h1>Create new food entry</h1></div>
+            <form class="post_food" action="">
+                <div class="mb-3">
+                    <label for="food_name" class="form-label">Item Name</label>
+                    <input type="text" class="form-control" id="food_name">
+                </div>
+                <div class="mb-3">
+                    <label for="origin" class="form-label">Origin</label>
+                    <input type="text" class="form-control" id="origin">
+                </div>
+                <span id="submit" class="btn btn-primary">Submit</span>
+            </form>
+            <div class="response d-flex justify-content-center"></div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // GET all foods in DB
+        $('#get-foods').on('click', function () {
+            $.get("/food/", function (data, status) {
+                const foods = data.map(function (obj) {
+                    return `<div class="col-12 mb-3">
+                     <div class="d-flex justify-content-center"><h4>${obj.name}</h4></div>
+                     <div class="d-flex justify-content-center"><span class="badge bg-success">Origin: ${obj.origin}</span></div>
+                    </div>
+                     `
+                })
+                $('.foods').empty()
+                $('.foods').append(foods)
+            });
+        })
+
+        // POST new food entry
+        $('#submit').on('click', function () {
+            $(this).css({'pointer-events': 'none', 'opacity': '0.5'})
+            const name = $('#food_name').val()
+            const origin = $('#origin').val()
+            $.post('/food/', {name: `${name}`, origin: `${origin}`}, function (response) {
+                $('.response').append(`<div class="alert alert-success" role="alert">
+                     Created!
+                     </div>`)
+                setTimeout(function () {
+                    $('.response').empty()
+                    $('#submit').css({'pointer-events': 'all', 'opacity': '1'})
+                }, 5000)
+            }).fail(function () {
+                $('.response').append(`<div class="alert alert-danger" role="alert">
+                     Bad Request!
+                     </div>`)
+                setTimeout(function () {
+                    $('.response').empty()
+                    $('#submit').css({'pointer-events': 'all', 'opacity': '1'})
+                }, 5000)
+            })
+
+        })
+    })
+
+</script>

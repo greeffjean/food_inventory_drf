@@ -1,0 +1,26 @@
+[
+  {
+    "model": "food_client.Food",
+    "pk": 1,
+    "fields": {
+      "name": "Tomato",
+      "origin": "Italy"
+    }
+  },
+  {
+    "model": "food_client.Food",
+    "pk": 2,
+    "fields": {
+      "name": "Sardine",
+      "origin": "Corsica"
+    }
+  },
+  {
+    "model": "food_client.Food",
+    "pk": 3,
+    "fields": {
+      "name": "Olive",
+      "origin": "Greece"
+    }
+  }
+]

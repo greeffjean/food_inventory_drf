@@ -1,0 +1,84 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Foods</title>
+    <meta name="description" content="A simple HTML5 Template for new projects.">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+          crossorigin="anonymous">
+</head>
+
+<style>
+    .edit_food {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    .edit_food.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+</style>
+
+<body>
+<div class="container">
+    <nav class="mb-3 navbar navbar-expand-lg navbar-light bg-light">
+        <a href="/">Foods</a>
+    </nav>
+
+    <div class="row">
+
+        <div class="col-6 get-wrapper">
+            {% for food in foods %}
+                <div>
+                    <button value="{{ food.id }}" class="btn btn-primary w-50 mb-2">{{ food }}</button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-6">
+
+            <!-- Edit -->
+            <div class="d-flex justify-content-center item-heading"><h1>Select an item to edit</h1></div>
+            <form class="edit_food" action="">
+                <div class="mb-3">
+                    <label for="food_name" class="form-label">Item Name</label>
+                    <input type="text" class="form-control" id="food_name">
+                </div>
+                <div class="mb-3">
+                    <label for="origin" class="form-label">Origin</label>
+                    <input type="text" class="form-control" id="origin">
+                </div>
+                <span id="submit" class="btn btn-primary">Submit</span>
+                <!-- Delete -->
+                <span id="submit" class="btn btn-danger">Delete</span>
+            </form>
+            <div class="response d-flex justify-content-center"></div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // GET all foods in DB
+        $('.btn').on('click', function () {
+            const val = $(this).val()
+            $.get(`/food/${val}`, function (response) {
+                $('.item-heading').empty()
+                $('.item-heading').append(`<h1>${response.name}</h1>`)
+                $('#food_name').val(response.name)
+                $('#origin').val(response.origin)
+                $('.edit_food').addClass('active')
+            })
+        })
+    });
+
+</script>
