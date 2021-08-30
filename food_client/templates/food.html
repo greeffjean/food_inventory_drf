@@ -53,7 +53,7 @@
     $(document).ready(function () {
         // GET all foods in DB
         $('#get-foods').on('click', function () {
-            $.get("/food/", function (data, status) {
+            $.get("/foods/", function (data, status) {
                 const foods = data.map(function (obj) {
                     return `<div class="col-12 mb-3">
                      <div class="d-flex justify-content-center"><h4>${obj.name}</h4></div>
@@ -71,7 +71,8 @@
             $(this).css({'pointer-events': 'none', 'opacity': '0.5'})
             const name = $('#food_name').val()
             const origin = $('#origin').val()
-            $.post('/food/', {name: `${name}`, origin: `${origin}`}, function (response) {
+            $.post('/create_food/', {test: `${name}`, origin: `${origin}`}, function (response) {
+                console.log(response)
                 $('.response').append(`<div class="alert alert-success" role="alert">
                      Created!
                      </div>`)
@@ -79,9 +80,10 @@
                     $('.response').empty()
                     $('#submit').css({'pointer-events': 'all', 'opacity': '1'})
                 }, 5000)
-            }).fail(function () {
+            }).fail(function (response) {
+                console.log(response)
                 $('.response').append(`<div class="alert alert-danger" role="alert">
-                     Bad Request!
+                     ${response.statusText} ${response.status}
                      </div>`)
                 setTimeout(function () {
                     $('.response').empty()

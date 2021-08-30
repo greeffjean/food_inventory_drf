@@ -34,7 +34,7 @@
         <div class="col-6 get-wrapper">
             {% for food in foods %}
                 <div>
-                    <button value="{{ food.id }}" class="btn btn-primary w-50 mb-2">{{ food }}</button>
+                    <button value="{{ food.id }}" class="btn food btn-primary w-50 mb-2">{{ food }}</button>
                 </div>
             {% endfor %}
         </div>
@@ -43,7 +43,7 @@
 
             <!-- Edit -->
             <div class="d-flex justify-content-center item-heading"><h1>Select an item to edit</h1></div>
-            <form class="edit_food" action="">
+            <form class="edit_food" action="" food_id="">
                 <div class="mb-3">
                     <label for="food_name" class="form-label">Item Name</label>
                     <input type="text" class="form-control" id="food_name">
@@ -52,9 +52,9 @@
                     <label for="origin" class="form-label">Origin</label>
                     <input type="text" class="form-control" id="origin">
                 </div>
-                <span id="submit" class="btn btn-primary">Submit</span>
+                <span id="submit" class="btn update btn-primary">Submit</span>
                 <!-- Delete -->
-                <span id="submit" class="btn btn-danger">Delete</span>
+                <span id="submit" class="btn delete btn-danger">Delete</span>
             </form>
             <div class="response d-flex justify-content-center"></div>
         </div>
@@ -69,9 +69,10 @@
 <script type="text/javascript">
     $(document).ready(function () {
         // GET all foods in DB
-        $('.btn').on('click', function () {
+        $('.btn.food').on('click', function () {
             const val = $(this).val()
-            $.get(`/food/${val}`, function (response) {
+            $('form').attr('food_id', `${val}`)
+            $.get(`/foods/${val}`, function (response) {
                 $('.item-heading').empty()
                 $('.item-heading').append(`<h1>${response.name}</h1>`)
                 $('#food_name').val(response.name)
@@ -79,6 +80,45 @@
                 $('.edit_food').addClass('active')
             })
         })
+
+        $('.btn.delete').on('click', function () {
+            const id = $('form').attr('food_id')
+            $.post(`/delete_food/${id}`, function () {
+                window.location.reload()
+            }).fail(function (response) {
+                console.log(response)
+                $('.response').append(`<div class="alert alert-danger" role="alert">
+                     ${response.statusText} ${response.status}
+                     </div>`)
+                setTimeout(function () {
+                    $('.response').empty()
+                    $('#submit').css({'pointer-events': 'all', 'opacity': '1'})
+                }, 5000)
+            })
+        })
+
+        $('.btn.update').on('click', function () {
+            const id = $('form').attr('food_id')
+
+            let obj = {}
+            $('form :input').each(function(){
+                obj[$(this).attr('id')] = $(this).val()
+            })
+
+            $.post(`/update_food/${id}`, obj, function () {
+                window.location.reload()
+            }).fail(function (response) {
+                console.log(response)
+                $('.response').append(`<div class="alert alert-danger" role="alert">
+                     ${response.statusText} ${response.status}
+                     </div>`)
+                setTimeout(function () {
+                    $('.response').empty()
+                    $('#submit').css({'pointer-events': 'all', 'opacity': '1'})
+                }, 5000)
+            })
+        })
+
     });
 
 </script>

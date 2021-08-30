@@ -1,10 +1,13 @@
-from rest_framework import serializers, permissions
+from rest_framework import serializers
 
 from food_client.models import Food
 
-class FoodSerializer(serializers.HyperlinkedModelSerializer):
+class FoodSerializer(serializers.ModelSerializer):
     class Meta:
         model = Food
         fields = ('name', 'origin')
-        # permission_classes = [permissions.IsAuthenticated]
+
+
+
+
 
